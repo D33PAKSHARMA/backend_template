@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import env from "dotenv";
 import authRoutes from "./routes/auth.routes.js";
 import userRoutes from "./routes/user.routes.js";
+import mongoose from "mongoose";
 
 env.config();
 
@@ -14,8 +15,14 @@ app.use(cookieParser());
 app.use(cors());
 app.use(morgan("dev"));
 
+//connect Db
+await mongoose
+  .connect(process.env.DB_URL)
+  .then(() => console.log(`DB connected!`))
+  .catch((err) => console.log(err));
+
 // routes declaration
-app.use("/auth/v1", authRoutes);
-app.use("/user/v1", userRoutes);
+app.use("/v1/auth", authRoutes);
+app.use("/v1/user", userRoutes);
 
 export default app;
